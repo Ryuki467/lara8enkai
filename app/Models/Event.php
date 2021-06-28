@@ -32,7 +32,11 @@ class Event extends Model
     ];
     
     public function eventuser(){
-        return $this->hasMany('App\Models\Eventuser','Event_id');
+        return $this->hasMany('App\Models\Eventuser','event_id');
+    }
+    
+    public function chat(){
+        return $this->hasMany('App\Models\Chat','event_id');
     }
     
     public function category(){

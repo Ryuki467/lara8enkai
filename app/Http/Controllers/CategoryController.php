@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -52,9 +53,17 @@ class CategoryController extends Controller{
     }
     
     function destroy(Request $request, $id){
+        $events = Event::all();
+        $using_flg = false;
+        foreach($events as $event){
+            if($id == $event["category_id"]) $using_flg = true;
+        }
+        if($using_flg){
+            $request->session()->flash('error', __('このカテゴリは削除できません'));
+            return redirect()->route('admin.category.index');
+        }
         $category = new Category;
-        $category->destroy($id);
-        if($category->save()){
+        if($category->destroy($id)){
             $request->session()->flash('success', __('カテゴリを削除しました'));
         }else{
             $request->session()->flash('error', __('カテゴリの削除に失敗しました'));
